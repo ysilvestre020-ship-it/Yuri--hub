@@ -1,0 +1,121 @@
+--[[ 
+    YURI HUB 2026 - RAINBOW EDITION 🌈🎩
+    Status: CERTIFIED [V7.0]
+    Key: yurizin
+]]
+
+local p = game.Players.LocalPlayer
+local c = game:GetService("CoreGui")
+local rs = game:GetService("RunService")
+
+local validKey = "yurizin"
+_G.RainbowCar = false
+_G.RainbowHouse = false
+
+-- [ FUNÇÕES DE ELITE ]
+local function Notif(t, m)
+    game:GetService("StarterGui"):SetCore("SendNotification", {Title = "🌈 "..t, Text = m, Duration = 3})
+end
+
+-- [ INTERFACE DE LOGIN ]
+local keyGui = Instance.new("ScreenGui", c)
+local kFrame = Instance.new("Frame", keyGui)
+kFrame.Size, kFrame.Position = UDim2.new(0, 280, 0, 180), UDim2.new(0.5, -140, 0.5, -90)
+kFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+kFrame.Active, kFrame.Draggable = true, true
+Instance.new("UICorner", kFrame)
+
+local kInput = Instance.new("TextBox", kFrame)
+kInput.Size, kInput.Position, kInput.PlaceholderText = UDim2.new(0.8, 0, 0, 35), UDim2.new(0.1, 0, 0.3, 0), "Chave: yurizin"
+kInput.BackgroundColor3 = Color3.fromRGB(50,50,50) kInput.TextColor3 = Color3.new(1,1,1)
+
+local kBtn = Instance.new("TextButton", kFrame)
+kBtn.Size, kBtn.Position, kBtn.Text = UDim2.new(0.8, 0, 0, 40), UDim2.new(0.1, 0, 0.65, 0), "LOGAR"
+kBtn.BackgroundColor3 = Color3.new(0, 0.6, 0.6) kBtn.TextColor3 = Color3.new(1,1,1)
+
+function AbrirHub()
+    local main = Instance.new("ScreenGui", c)
+    local f = Instance.new("Frame", main)
+    f.Size = UDim2.new(0, 350, 0, 500)
+    f.Position = UDim2.new(0.1, 0, 0.2, 0)
+    f.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    f.Active, f.Draggable = true, true
+    Instance.new("UICorner", f)
+    Instance.new("UIStroke", f).Color = Color3.new(1,1,1)
+
+    local sc = Instance.new("ScrollingFrame", f)
+    sc.Size, sc.Position, sc.BackgroundTransparency = UDim2.new(1, -10, 0.85, 0), UDim2.new(0, 5, 0.12, 0), 1
+    sc.CanvasSize = UDim2.new(0,0,10,0)
+    Instance.new("UIListLayout", sc).Padding = UDim.new(0,10)
+
+    local function add(txt, col, fn)
+        local b = Instance.new("TextButton", sc)
+        b.Size, b.Text, b.BackgroundColor3 = UDim2.new(0.95, 0, 0, 40), txt, col
+        b.TextColor3, b.Font = Color3.new(1,1,1), "GothamBold"
+        Instance.new("UICorner", b)
+        b.MouseButton1Click:Connect(fn)
+    end
+
+    -- --- SEÇÃO RAINBOW 🌈 ---
+    add("CARRO RAINBOW 🏎️🌈", Color3.new(0, 0.8, 0.8), function()
+        _G.RainbowCar = not _G.RainbowCar
+        Notif("RAINBOW", "Carro Arco-íris: " .. tostring(_G.RainbowCar))
+        while _G.RainbowCar do
+            if p.Character and p.Character.Humanoid.SeatPart then
+                local car = p.Character.Humanoid.SeatPart.Parent
+                for _, part in pairs(car:GetDescendants()) do
+                    if part:IsA("BasePart") or part:IsA("MeshPart") then
+                        part.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+
+    add("CASA RAINBOW 🏠🌈", Color3.new(0.8, 0, 0.8), function()
+        _G.RainbowHouse = not _G.RainbowHouse
+        Notif("RAINBOW", "Casa Arco-íris: " .. tostring(_G.RainbowHouse))
+        while _G.RainbowHouse do
+            for _, v in pairs(workspace.Houses:GetDescendants()) do
+                -- Detecta se a casa pertence ao jogador (baseado na proximidade ou nome)
+                if v:IsA("BasePart") and (v.Position - p.Character.HumanoidRootPart.Position).Magnitude < 100 then
+                    v.Color = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+
+    -- --- SEÇÃO ROUPAS ✨ ---
+    add("MENINA: MANDRAKE 💖", Color3.fromRGB(255, 0, 127), function() 
+        p.Character.Shirt.ShirtTemplate = "rbxassetid://14022631557"
+        p.Character.Pants.PantsTemplate = "rbxassetid://14022633842"
+    end)
+
+    add("MENINO: MANDRAKE ⛓️", Color3.fromRGB(150, 0, 0), function() 
+        p.Character.Shirt.ShirtTemplate = "rbxassetid://13531988891"
+        p.Character.Pants.PantsTemplate = "rbxassetid://13532014023"
+    end)
+
+    -- --- UTILITÁRIOS ---
+    add("SPEED CARRO 300 KM/H 🏎️", Color3.new(0, 0.5, 0), function()
+        rs.Stepped:Connect(function()
+            if p.Character.Humanoid.SeatPart then
+                p.Character.Humanoid.SeatPart.MaxSpeed = 300
+                p.Character.Humanoid.SeatPart.Velocity = p.Character.Humanoid.SeatPart.CFrame.LookVector * 300
+            end
+        end)
+    end)
+
+    add("FECHAR (X)", Color3.new(1,0,0), function() f:Destroy() main:Destroy() end)
+end
+
+-- [ LOGIN ]
+kBtn.MouseButton1Click:Connect(function()
+    if kInput.Text:lower():gsub("%s+", "") == validKey then
+        keyGui:Destroy() Notif("YURI HUB", "Aproveite o Arco-íris! 🌈") AbrirHub()
+    else
+        kBtn.Text = "CHAVE INCORRETA" task.wait(1) kBtn.Text = "LOGAR"
+    end
+end)
