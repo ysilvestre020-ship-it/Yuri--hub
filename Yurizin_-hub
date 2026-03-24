@@ -1,0 +1,103 @@
+-- YURI HUB V12 - BROOKHAVEN EDITION
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LP = Players.LocalPlayer
+
+local function Char()
+    return LP.Character or LP.CharacterAdded:Wait()
+end
+
+-- UI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0,400,0,300)
+main.Position = UDim2.new(0.05,0,0.2,0)
+main.BackgroundColor3 = Color3.fromRGB(20,20,20)
+main.Active, main.Draggable = true, true
+
+local layout = Instance.new("UIListLayout", main)
+
+local function Btn(txt, func)
+    local b = Instance.new("TextButton", main)
+    b.Size = UDim2.new(1,0,0,40)
+    b.Text = txt
+    b.BackgroundColor3 = Color3.fromRGB(0,170,170)
+    b.TextColor3 = Color3.new(1,1,1)
+    b.MouseButton1Click:Connect(func)
+end
+
+-- PLAYER
+
+Btn("⚡ Speed", function()
+    local hum = Char():FindFirstChildOfClass("Humanoid")
+    if hum then hum.WalkSpeed = 50 end
+end)
+
+Btn("🦘 Super Jump", function()
+    local hum = Char():FindFirstChildOfClass("Humanoid")
+    if hum then hum.JumpPower = 120 end
+end)
+
+Btn("👻 Noclip", function()
+    RunService.Stepped:Connect(function()
+        for _,v in pairs(Char():GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = false
+            end
+        end
+    end)
+end)
+
+Btn("✈️ Fly", function()
+    local bv = Instance.new("BodyVelocity", Char().HumanoidRootPart)
+    bv.Velocity = Vector3.new(0,50,0)
+end)
+
+-- TELEPORT
+
+Btn("🏫 Escola", function()
+    Char().HumanoidRootPart.CFrame = CFrame.new(-400, 30, 200)
+end)
+
+Btn("🏥 Hospital", function()
+    Char().HumanoidRootPart.CFrame = CFrame.new(100, 30, -300)
+end)
+
+-- VEÍCULO
+
+Btn("🚗 Car Speed", function()
+    local seat = Char().Humanoid.SeatPart
+    if seat then
+        seat.MaxSpeed = 300
+    end
+end)
+
+Btn("🌈 Rainbow Car", function()
+    RunService.RenderStepped:Connect(function()
+        local seat = Char().Humanoid.SeatPart
+        if seat then
+            for _,v in pairs(seat.Parent:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.Color = Color3.fromHSV(tick()%5/5,1,1)
+                end
+            end
+        end
+    end)
+end)
+
+-- ROUPA
+
+Btn("👕 Mandrake", function()
+    local char = Char()
+    local s = Instance.new("Shirt", char)
+    local p = Instance.new("Pants", char)
+
+    s.ShirtTemplate = "rbxassetid://14022631557"
+    p.PantsTemplate = "rbxassetid://14022633842"
+end)
+
+-- FECHAR
+Btn("❌ Fechar", function()
+    gui:Destroy()
+end)
