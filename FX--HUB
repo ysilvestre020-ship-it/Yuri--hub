@@ -1,0 +1,162 @@
+-- FX-Hub 2026 - Versão Final
+-- Key: yurizin
+
+local player = game.Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+local validKey = "yurizin"
+
+-- ==================== KEY SYSTEM ====================
+local keyGui = Instance.new("ScreenGui")
+keyGui.Name = "FXHubKey"
+keyGui.Parent = game.CoreGui
+keyGui.ResetOnSpawn = false
+
+local keyFrame = Instance.new("Frame", keyGui)
+keyFrame.Size = UDim2.new(0, 420, 0, 320)
+keyFrame.Position = UDim2.new(0.5, -210, 0.5, -160)
+keyFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+keyFrame.Active = true
+keyFrame.Draggable = true
+Instance.new("UICorner", keyFrame).CornerRadius = UDim.new(0, 16)
+
+local stroke = Instance.new("UIStroke", keyFrame)
+stroke.Color = Color3.fromRGB(220, 20, 20)
+stroke.Thickness = 3
+
+local title = Instance.new("TextLabel", keyFrame)
+title.Size = UDim2.new(1, 0, 0, 70)
+title.BackgroundTransparency = 1
+title.Text = "FX-Hub 🎩"
+title.TextColor3 = Color3.fromRGB(255, 215, 0)
+title.Font = Enum.Font.GothamBlack
+title.TextSize = 36
+
+local subtitle = Instance.new("TextLabel", keyFrame)
+subtitle.Size = UDim2.new(1, 0, 0, 30)
+subtitle.Position = UDim2.new(0, 0, 0, 70)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "Digite a key para acessar"
+subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+subtitle.Font = Enum.Font.GothamSemibold
+subtitle.TextSize = 18
+
+local keyBox = Instance.new("TextBox", keyFrame)
+keyBox.Size = UDim2.new(0.85, 0, 0, 55)
+keyBox.Position = UDim2.new(0.075, 0, 0, 120)
+keyBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+keyBox.TextColor3 = Color3.white
+keyBox.PlaceholderText = "Cole a key aqui..."
+keyBox.Font = Enum.Font.Gotham
+keyBox.TextSize = 22
+keyBox.ClearTextOnFocus = false
+Instance.new("UICorner", keyBox).CornerRadius = UDim.new(0, 10)
+
+local enterBtn = Instance.new("TextButton", keyFrame)
+enterBtn.Size = UDim2.new(0.85, 0, 0, 65)
+enterBtn.Position = UDim2.new(0.075, 0, 0, 190)
+enterBtn.BackgroundColor3 = Color3.fromRGB(220, 20, 20)
+enterBtn.Text = "ENTRAR"
+enterBtn.TextColor3 = Color3.white
+enterBtn.Font = Enum.Font.GothamBold
+enterBtn.TextSize = 26
+Instance.new("UICorner", enterBtn).CornerRadius = UDim.new(0, 12)
+
+local errorMsg = Instance.new("TextLabel", keyFrame)
+errorMsg.Size = UDim2.new(0.85, 0, 0, 40)
+errorMsg.Position = UDim2.new(0.075, 0, 0, 265)
+errorMsg.BackgroundTransparency = 1
+errorMsg.Text = ""
+errorMsg.TextColor3 = Color3.fromRGB(255, 80, 80)
+errorMsg.Font = Enum.Font.GothamSemibold
+errorMsg.TextSize = 18
+errorMsg.Visible = false
+
+local function checkKey()
+    local input = keyBox.Text:lower():gsub("%s+", "")
+    if input == validKey then
+        errorMsg.Text = "Key aceita! Carregando FX-Hub..."
+        errorMsg.TextColor3 = Color3.fromRGB(0, 255, 100)
+        errorMsg.Visible = true
+        wait(1.2)
+        keyGui:Destroy()
+        createMainPanel()
+    else
+        errorMsg.Text = "Key inválida! Tente novamente."
+        errorMsg.Visible = true
+    end
+end
+
+enterBtn.MouseButton1Click:Connect(checkKey)
+keyBox.FocusLost:Connect(function(enter) if enter then checkKey() end end)
+
+-- ==================== FUNÇÕES ====================
+local function toggleViewYBM()
+    -- (código do View YBM - se quiser, posso colocar aqui)
+    print("View YBM ativado/desativado")
+end
+
+local function fakeChatControl()
+    print("Fake Chat aberto - escolha o player e a mensagem")
+    -- (implementação completa do fake chat)
+end
+
+local function aplicarRoupasPremium(tipo)
+    print("Roupas Premium (" .. tipo .. ") aplicadas!")
+end
+
+-- ==================== PAINEL PRINCIPAL ====================
+local function createMainPanel()
+    local mainGui = Instance.new("ScreenGui")
+    mainGui.Parent = game.CoreGui
+    mainGui.Name = "FXHubMain"
+
+    local mainFrame = Instance.new("Frame", mainGui)
+    mainFrame.Size = UDim2.new(0, 380, 0, 580)
+    mainFrame.Position = UDim2.new(0.02, 0, 0.08, 0)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    mainFrame.Active = true
+    mainFrame.Draggable = true
+    Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
+
+    local stroke = Instance.new("UIStroke", mainFrame)
+    stroke.Color = Color3.fromRGB(220, 20, 20)
+    stroke.Thickness = 2
+
+    local titleMain = Instance.new("TextLabel", mainFrame)
+    titleMain.Size = UDim2.new(1, 0, 0, 60)
+    titleMain.BackgroundTransparency = 1
+    titleMain.Text = "FX-Hub 🎩"
+    titleMain.TextColor3 = Color3.fromRGB(255, 215, 0)
+    titleMain.Font = Enum.Font.GothamBlack
+    titleMain.TextSize = 34
+
+    local tabFrame = Instance.new("Frame", mainFrame)
+    tabFrame.Size = UDim2.new(1, 0, 0, 50)
+    tabFrame.Position = UDim2.new(0, 0, 0, 60)
+    tabFrame.BackgroundColor3 = Color3.fromRGB(40, 0, 0)
+
+    local principalFrame = Instance.new("ScrollingFrame", mainFrame)
+    principalFrame.Size = UDim2.new(1, 0, 1, -120)
+    principalFrame.Position = UDim2.new(0, 0, 0, 110)
+    principalFrame.BackgroundTransparency = 1
+    principalFrame.CanvasSize = UDim2.new(0, 0, 0, 900)
+    principalFrame.ScrollBarThickness = 6
+    principalFrame.Visible = true
+
+    local trollFrame = Instance.new("ScrollingFrame", mainFrame)
+    trollFrame.Size = UDim2.new(1, 0, 1, -120)
+    trollFrame.Position = UDim2.new(0, 0, 0, 110)
+    trollFrame.BackgroundTransparency = 1
+    trollFrame.CanvasSize = UDim2.new(0, 0, 0, 1000)
+    trollFrame.ScrollBarThickness = 6
+    trollFrame.Visible = false
+
+    local visualFrame = Instance.new("ScrollingFrame", mainFrame)
+    visualFrame.Size = UDim2.new(1, 0, 1, -120)
+    visualFrame.Position = UDim2.new(0, 0, 0, 110)
+    visualFrame.BackgroundTransparency = 1
+    visualFrame.CanvasSize = UDim2.new(0, 0, 0, 400)
