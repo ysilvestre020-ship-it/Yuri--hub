@@ -1,105 +1,101 @@
--- FX-Hub 2026 - Key System Corrigida (Botão Entrar visível)
--- Key: yurizin
+--[[ 
+    YURI HUB 🌈🎩 - SUPREME EDITION
+    SUPORTA: BROOKHAVEN & MM2
+    KEY: yurizin
+]]
 
-local player = game.Players.LocalPlayer
-local TweenService = game:GetService("TweenService")
+local S = {
+    Players = game:GetService("Players"),
+    CoreGui = game:GetService("CoreGui"),
+    RunService = game:GetService("RunService"),
+    TweenService = game:GetService("TweenService")
+}
 
-local validKey = "yurizin"
+local LP = S.Players.LocalPlayer
+local function Char() return LP.Character or LP.CharacterAdded:Wait() end
 
-local keyGui = Instance.new("ScreenGui")
-keyGui.Name = "FXKeySystem"
-keyGui.Parent = game.CoreGui
-keyGui.ResetOnSpawn = false
-
-local frame = Instance.new("Frame", keyGui)
-frame.Size = UDim2.new(0, 400, 0, 280)
-frame.Position = UDim2.new(0.5, -200, 0.5, -140)
-frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-frame.BorderSizePixel = 0
-frame.Active = true
-frame.Draggable = true
-
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 16)
-
-local stroke = Instance.new("UIStroke", frame)
-stroke.Color = Color3.fromRGB(220, 20, 20)
-stroke.Thickness = 3
-
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 60)
-title.BackgroundTransparency = 1
-title.Text = "FX-Hub 🎩"
-title.TextColor3 = Color3.fromRGB(255, 215, 0)
-title.Font = Enum.Font.GothamBlack
-title.TextSize = 34
-
-local subtitle = Instance.new("TextLabel", frame)
-subtitle.Size = UDim2.new(1, 0, 0, 30)
-subtitle.Position = UDim2.new(0, 0, 0, 65)
-subtitle.BackgroundTransparency = 1
-subtitle.Text = "Insira a key para continuar"
-subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
-subtitle.Font = Enum.Font.GothamSemibold
-subtitle.TextSize = 18
-
-local keyBox = Instance.new("TextBox", frame)
-keyBox.Size = UDim2.new(0.8, 0, 0, 50)
-keyBox.Position = UDim2.new(0.1, 0, 0, 110)
-keyBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-keyBox.TextColor3 = Color3.white
-keyBox.PlaceholderText = "Cole a key aqui..."
-keyBox.Font = Enum.Font.Gotham
-keyBox.TextSize = 20
-keyBox.ClearTextOnFocus = false
-Instance.new("UICorner", keyBox).CornerRadius = UDim.new(0, 10)
-
-local enterBtn = Instance.new("TextButton", frame)
-enterBtn.Size = UDim2.new(0.8, 0, 0, 55)
-enterBtn.Position = UDim2.new(0.1, 0, 0, 175)
-enterBtn.BackgroundColor3 = Color3.fromRGB(220, 20, 20)
-enterBtn.Text = "ENTRAR"
-enterBtn.TextColor3 = Color3.white
-enterBtn.Font = Enum.Font.GothamBold
-enterBtn.TextSize = 24
-Instance.new("UICorner", enterBtn).CornerRadius = UDim.new(0, 12)
-
-local errorLabel = Instance.new("TextLabel", frame)
-errorLabel.Size = UDim2.new(0.8, 0, 0, 30)
-errorLabel.Position = UDim2.new(0.1, 0, 0, 240)
-errorLabel.BackgroundTransparency = 1
-errorLabel.Text = ""
-errorLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-errorLabel.Font = Enum.Font.Gotham
-errorLabel.TextSize = 16
-errorLabel.Visible = false
-
--- Hover no botão
-enterBtn.MouseEnter:Connect(function()
-    TweenService:Create(enterBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 50, 50)}):Play()
-end)
-enterBtn.MouseLeave:Connect(function()
-    TweenService:Create(enterBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(220, 20, 20)}):Play()
-end)
-
-local function verificarKey()
-    local texto = keyBox.Text:lower():gsub("%s+", "")
-    if texto == validKey then
-        errorLabel.Text = "Key correta! Carregando..."
-        errorLabel.TextColor3 = Color3.fromRGB(0, 255, 120)
-        errorLabel.Visible = true
-        wait(1)
-        keyGui:Destroy()
-        print("✅ FX-Hub carregado com sucesso!")
-        -- Aqui vai o painel principal (adicione o createMainPanel() se quiser)
-    else
-        errorLabel.Text = "Key errada! Tente novamente."
-        errorLabel.Visible = true
-    end
+-- ENGINE DE TOGGLE
+local Engine = { States = {}, Conns = {} }
+function Engine:Toggle(name, fn)
+    self.States[name] = not self.States[name]
+    if self.Conns[name] then self.Conns[name]:Disconnect() self.Conns[name] = nil end
+    if self.States[name] then self.Conns[name] = S.RunService.RenderStepped:Connect(fn) end
 end
 
-enterBtn.MouseButton1Click:Connect(verificarKey)
-keyBox.FocusLost:Connect(function(enterPressed)
-    if enterPressed then verificarKey() end
-end)
+-- TELA DE LOADING
+local function Loading(cb)
+    local g = Instance.new("ScreenGui", S.CoreGui)
+    local b = Instance.new("Frame", g)
+    b.Size = UDim2.new(1,0,1,0) b.BackgroundColor3 = Color3.new(0,0,0)
+    local t = Instance.new("TextLabel", b)
+    t.Size = UDim2.new(1,0,0,100) t.Position = UDim2.new(0,0,0.4,0)
+    t.Text = "YURI HUB 2026 🎩" t.TextColor3 = Color3.new(0,1,1)
+    t.Font = "GothamBold" t.TextSize = 40 t.BackgroundTransparency = 1
+    task.wait(2) g:Destroy() cb()
+end
 
-print("Key System carregada! Use yurizin")
+-- INTERFACE PRINCIPAL
+local function Main()
+    local g = Instance.new("ScreenGui", S.CoreGui)
+    local f = Instance.new("Frame", g)
+    f.Size = UDim2.new(0,350,0,400) f.Position = UDim2.new(0.1,0,0.2,0)
+    f.BackgroundColor3 = Color3.fromRGB(20,20,20) f.Active = true f.Draggable = true
+    Instance.new("UICorner", f)
+    Instance.new("UIStroke", f).Color = Color3.new(0,1,1)
+
+    local sc = Instance.new("ScrollingFrame", f)
+    sc.Size = UDim2.new(1,-10,0.9,0) sc.Position = UDim2.new(0,5,0.05,0)
+    sc.BackgroundTransparency = 1 sc.CanvasSize = UDim2.new(0,0,5,0)
+    Instance.new("UIListLayout", sc).Padding = UDim.new(0,10)
+
+    local function Btn(txt, col, func)
+        local b = Instance.new("TextButton", sc)
+        b.Size = UDim2.new(0.9,0,0,40) b.BackgroundColor3 = col
+        b.Text = txt b.TextColor3 = Color3.new(1,1,1)
+        Instance.new("UICorner", b)
+        b.MouseButton1Click:Connect(func)
+    end
+
+    -- FUNÇÕES
+    Btn("🌈 RAINBOW CAR", Color3.new(0,0.5,0.5), function()
+        Engine:Toggle("car", function()
+            local seat = Char().Humanoid.SeatPart
+            if seat then for _,v in pairs(seat.Parent:GetDescendants()) do
+                if v:IsA("BasePart") then v.Color = Color3.fromHSV(tick()%5/5,1,1) end
+            end end
+        end)
+    end)
+
+    Btn("🏠 RAINBOW HOUSE", Color3.new(0.5,0,0.5), function()
+        Engine:Toggle("house", function()
+            for _,v in pairs(workspace.Houses:GetDescendants()) do
+                if v:IsA("BasePart") and (v.Position - Char().HumanoidRootPart.Position).Magnitude < 100 then
+                    v.Color = Color3.fromHSV(tick()%5/5,1,1)
+                end
+            end
+        end)
+    end)
+
+    Btn("👗 ROUPA MANDRAKE (F)", Color3.new(1,0,0.5), function()
+        Char().Shirt.ShirtTemplate = "rbxassetid://14022631557"
+        Char().Pants.PantsTemplate = "rbxassetid://14022633842"
+    end)
+
+    Btn("👕 ROUPA MANDRAKE (M)", Color3.new(0.5,0,0), function()
+        Char().Shirt.ShirtTemplate = "rbxassetid://13531988891"
+        Char().Pants.PantsTemplate = "rbxassetid://13532014023"
+    end)
+
+    Btn("🔪 MM2: ESP MURDER", Color3.new(1,0,0), function()
+        for _,v in pairs(S.Players:GetPlayers()) do
+            if v.Character and (v.Backpack:FindFirstChild("Knife") or v.Character:FindFirstChild("Knife")) then
+                local h = Instance.new("Highlight", v.Character) h.FillColor = Color3.new(1,0,0)
+            end
+        end
+    end)
+
+    Btn("❌ FECHAR", Color3.new(0.2,0.2,0.2), function() g:Destroy() end)
+end
+
+-- START
+Loading(function() Main() end)
